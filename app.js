@@ -6,8 +6,11 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var http = require("http");
 var cors = require('cors');
+var AWS = require('aws-sdk');
+var uuid = require('node-uuid');
 
 var app = express();
+var sqs = new AWS.SQS({region: 'us-west-2'});
 
 app.use(cors());
 app.use(logger('dev'));
@@ -31,6 +34,23 @@ app.all('/MODApis*', function (req, res) {
     });
 });
 
+app.post('/api/compare', function (req, res) {
+    var data = req.body;
+    data.id = uuid.v4();
+    var params = {
+        MessageBody: JSON.stringify(data),
+        QueueUrl: 'https://sqs.us-west-2.amazonaws.com/557989321320/cmpe282-compare-queue'
+    };
+    sqs.sendMessage(params, function (err, data) {
+        if (err) {
+            console.log(err, err.stack);
+            res.status(500).send();
+        }
+        else {
+            res.status(201).send();
+        }
+    });
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
