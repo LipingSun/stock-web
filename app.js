@@ -8,9 +8,18 @@ var http = require("http");
 var cors = require('cors');
 var AWS = require('aws-sdk');
 var uuid = require('node-uuid');
+var request = require('request');
 
 var app = express();
-var sqs = new AWS.SQS({region: 'us-west-2'});
+var sqs = new AWS.SQS({region: 'us-west-2', credentials: false});
+
+const API_HOST = 'http://dev.markitondemand.com';
+const COMPARE_QUEUE_URL = 'https://sqs.us-west-2.amazonaws.com/557989321320/cmpe282-compare-queue';
+const DATA_COMPONENT_URL = 'http://localhost:2000';
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 app.use(cors());
 app.use(logger('dev'));
@@ -19,12 +28,12 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
 app.all('/MODApis*', function (req, res) {
-    http.get('http://dev.markitondemand.com' + req.originalUrl, function (apiRes) {
+    http.get(API_HOST + req.originalUrl, function (stream) {
         var data = '';
-        apiRes.on('data', function (chunk) {
+        stream.on('data', function (chunk) {
             data += chunk;
         });
-        apiRes.on('end', function () {
+        stream.on('end', function () {
             console.log(data);
             res.send(JSON.parse(data));
         });
@@ -39,15 +48,31 @@ app.post('/api/compare', function (req, res) {
     data.id = uuid.v4();
     var params = {
         MessageBody: JSON.stringify(data),
-        QueueUrl: 'https://sqs.us-west-2.amazonaws.com/557989321320/cmpe282-compare-queue'
+        QueueUrl: COMPARE_QUEUE_URL
     };
-    sqs.sendMessage(params, function (err, data) {
+    sqs.sendMessage(params, function (err) {
         if (err) {
             console.log(err, err.stack);
             res.status(500).send();
         }
         else {
-            res.status(201).send();
+            res.status(201).send({compare_id: data.id});
+        }
+    });
+});
+
+app.get('/api/compare/:id', function (req, res) {
+    request.get(DATA_COMPONENT_URL + '/compare/' + req.params.id, function (err, response, body) {
+        if (err) {
+            console.log(err);
+            res.status(500).send();
+        } else {
+            if (response.status === 200) {
+                console.log(body);
+                res.send(JSON.parse(body));
+            } else {
+                res.status(404).send()
+            }
         }
     });
 });
