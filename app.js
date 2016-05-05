@@ -67,7 +67,7 @@ app.get('/api/compare/:id', function (req, res) {
             console.log(err);
             res.status(500).send();
         } else {
-            if (response.status === 200) {
+            if (response.statusCode === 200) {
                 console.log(body);
                 res.send(JSON.parse(body));
             } else {
