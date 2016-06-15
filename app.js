@@ -11,11 +11,14 @@ var uuid = require('node-uuid');
 var request = require('request');
 
 var app = express();
-var sqs = new AWS.SQS({region: 'us-west-2', credentials: false});
+var sqs = new AWS.SQS({region: 'us-west-1', credentials: false});
 
 const API_HOST = 'http://dev.markitondemand.com';
-const COMPARE_QUEUE_URL = 'https://sqs.us-west-2.amazonaws.com/557989321320/cmpe282-compare-queue';
-const DATA_COMPONENT_URL = 'http://localhost:2000';
+// const COMPARE_QUEUE_URL = 'https://sqs.us-west-2.amazonaws.com/557989321320/stock-compare-queue';
+const COMPARE_QUEUE_URL = 'https://sqs.us-west-1.amazonaws.com/497100832806/stock-compare-queue';
+// const DATA_COMPONENT_URL = 'http://stock-data-component.us-west-2.elasticbeanstalk.com';
+// const DATA_COMPONENT_URL = 'http://test.mwnumu4pmn.us-west-2.elasticbeanstalk.com';
+const DATA_COMPONENT_URL = 'stock-data.us-west-1.elasticbeanstalk.com';
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,6 +29,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.all('/MODApis*', function (req, res) {
     http.get(API_HOST + req.originalUrl, function (stream) {
