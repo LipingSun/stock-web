@@ -1,0 +1,22 @@
+<ion-navbar *navbar>
+    <ion-title>Price</ion-title>
+    <ion-buttons end>
+        <button (click)="addStock()">
+            <ion-icon name="add"></ion-icon>
+        </button>
+    </ion-buttons>
+</ion-navbar>
+
+<ion-content class="price">
+    <ion-list no-lines>
+        <ion-item card-item *ngFor="#stock of stocks">
+            <ion-card *ngIf="stock">
+                <button id="btn-close" light fab fab-right fab-top (click)="removeStock(stock)">
+                    <ion-icon name="close"></ion-icon>
+                </button>
+                <chart type="StockChart" [options]="stock.chart"></chart>
+            </ion-card>
+        </ion-item>
+    </ion-list>
+
+</ion-content>

@@ -1,0 +1,12 @@
+<ion-navbar *navbar>
+    <ion-title>Find Stock</ion-title>
+</ion-navbar>
+
+<ion-content class="search-page">
+    <ion-searchbar (input)="getItems($event)"></ion-searchbar>
+    <ion-list>
+        <ion-item *ngFor="#item of items" (click)="tapItem(item)">
+            {{ item.Symbol }} - {{ item.Name }}
+        </ion-item>
+    </ion-list>
+</ion-content>

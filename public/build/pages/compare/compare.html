@@ -1,0 +1,31 @@
+<ion-navbar *navbar>
+    <ion-title>Compare</ion-title>
+    <ion-buttons end>
+        <button (click)="addCompare()">
+            <ion-icon name="add"></ion-icon>
+        </button>
+    </ion-buttons>
+</ion-navbar>
+
+<ion-content class="compare">
+    <ion-list no-lines>
+        <ion-item card-item *ngFor="#compare of compares">
+            <ion-card *ngIf="compare">
+                <button id="btn-close" light fab fab-right fab-top (click)="removeCompare(compare)">
+                    <ion-icon name="close"></ion-icon>
+                </button>
+                <ion-card-header>{{ compare.stocks[0].name }} VS {{ compare.stocks[1].name }}</ion-card-header>
+                <ion-list>
+                    <ion-item card-item *ngFor="#stock of compare.stocks">
+                        <chart *ngIf="stock.chart" type="StockChart" [options]="stock.chart"></chart>
+                    </ion-item>
+                </ion-list>
+
+                <button block fab fab-center large clear (click)="refresh(compare)" *ngIf="!compare.stocks[0].chart">
+                    <ion-icon class="icon-refresh" large name="refresh"></ion-icon>
+                </button>
+            </ion-card>
+        </ion-item>
+    </ion-list>
+
+</ion-content>
