@@ -18,7 +18,7 @@ const API_HOST = 'http://dev.markitondemand.com';
 const COMPARE_QUEUE_URL = 'https://sqs.us-west-1.amazonaws.com/497100832806/stock-compare-queue';
 // const DATA_COMPONENT_URL = 'http://stock-data-component.us-west-2.elasticbeanstalk.com';
 // const DATA_COMPONENT_URL = 'http://test.mwnumu4pmn.us-west-2.elasticbeanstalk.com';
-const DATA_COMPONENT_URL = 'stock-data.us-west-1.elasticbeanstalk.com';
+const DATA_COMPONENT_URL = 'http://stock-data.us-west-1.elasticbeanstalk.com';
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
