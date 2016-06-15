@@ -1,0 +1,11 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "stock-web",
+      "image": "liping511/stock-web-component",
+      "essential": true,
+      "memory": 128
+    }
+  ]
+}
